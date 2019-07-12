@@ -54,7 +54,7 @@ do
       *)
          cat <&2 <<EOF
 
-Error, unknow arguments $1
+Error, unknown arguments $1
 EOF
          help
          exit 1

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ $# -lt 1 ] ; then
+    echo "need args: pid [time(secs)] [-cg]"
+  exit
+fi
+
+pid=$1
+
+wtime=""
+callgraph=""
+if [ $# -gt 1 ] ; then
+  if [ "$2" = "-cg" ] ; then
+    callgraph="--call-graph dwarf"
+  else
+    wtime="sleep $2"
+  fi
+  if [ $# -gt 2 ] ; then
+    if [ "$3" = "-cg" ] ; then
+      callgraph="--call-graph dwarf"
+    else
+      wtime="sleep $3"
+    fi
+  fi
+fi
+
+echo "perf $pid $callgraph $wtime"
+
+# if use this then prob also want to build with -fno-omit-frame-pointer
+#sudo perf record -F 99 -p $pid -g -- sleep $wtime
+#sudo perf record -F 99 -p $pid --call-graph dwarf $wtime
+
+sudo perf record -F 99 -p $pid $callgraph $wtime
+
+#perf report
+#perf report --stdio
+
+# if used -g / --call-graph above:
+#perf report --stdio -n -g folded
+
