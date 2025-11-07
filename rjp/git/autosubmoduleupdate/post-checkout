@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Post-checkout hook to automatically update submodules
+# This hook is called after a successful 'git checkout'
+
+# Get the parameters passed by git
+previous_head=$1
+new_head=$2
+branch_checkout=$3
+
+# Only run for branch checkouts (not file checkouts)
+# branch_checkout flag: 1 for branch checkout, 0 for file checkout
+if [ "$branch_checkout" = "1" ]; then
+    echo "Branch checkout detected. Updating submodules..."
+    
+    # Update submodules to match the new branch
+    git submodule update --init --recursive
+    
+    if [ $? -eq 0 ]; then
+        echo "Submodules updated successfully."
+    else
+        echo "Warning: Submodule update failed."
+        exit 1
+    fi
+fi
